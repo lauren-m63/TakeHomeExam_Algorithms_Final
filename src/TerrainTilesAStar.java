@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class TerrainTilesAStar {
@@ -91,8 +93,31 @@ public class TerrainTilesAStar {
             // if i find the goal tile i am gonna print my table about it
             if (current.row == end[0] && current.col == end[1]){
                 // CALL PRINTING METHOD
+                long endTime = System.currentTimeMillis();
+                long totalTime = endTime - startTime;
+
+                List<String> path = new ArrayList<>();
+
 
             }// end if statement for goal found
+
+
+            for (int[] direction : directions) {
+                int nextRow = current.row + direction[0];
+                int nextCol = current.col + direction[1];
+
+                if (nextRow >= 0
+                        && nextRow < gx.length
+                        && nextCol >= 0
+                        && nextCol < gx[0].length
+                        && !visited[nextRow][nextCol]
+                        && gx[nextRow][nextCol] != 'M'{
+
+                    int currentG = current.g +
+                }// end if statement
+
+            }// end for loop
+
 
         } // end while loop
 
@@ -131,6 +156,21 @@ public class TerrainTilesAStar {
         return 2 * (Math.abs(goalRow - row) + Math.abs(goalCol - col));
 
     }// END HEURISTIC
+
+    public static int terrainCompute(char tile){
+        switch (tile){
+            case 'H':
+            case'G':
+                case 'P':
+                return 2;
+            case 'F':
+                return 3;
+            case 'S':
+                return 5;
+            default:
+                return Integer.MAX_VALUE; // return inifity for my mountains
+        }
+    } // END TERRAIN COMPUTE
 
 
 
