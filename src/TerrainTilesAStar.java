@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class TerrainTilesAStar {
 
@@ -113,13 +110,22 @@ public class TerrainTilesAStar {
                         && !visited[nextRow][nextCol]
                         && gx[nextRow][nextCol] != 'M'{
 
-                    int currentG = current.g +
+                    int newG = current.g +terrainCompute(gx[nextRow][nextCol]);
+
+                    int newH = heutristic(nextRow, nextCol, end[0], end[1]);
+
+                    Node neighbor = new Node(
+                            nextRow, nextCol, newG, newH, current);
+
+                    pq.add(neighbor);
                 }// end if statement
 
             }// end for loop
 
 
         } // end while loop
+
+        System.out.println(" No path was found ");
 
 
 
@@ -174,9 +180,25 @@ public class TerrainTilesAStar {
 
 
 
-    public static void printTable(){
-
+    public static void printTable(int nodesVisited, List<String> path, int cost, long time){
+        System.out.println("===== PERFORMANCE TABLE =====");
+        System.out.println("Nodes Visited: " + nodesVisited);
+        System.out.println("Shortest Path Length: " + (path.size() - 1));
+        System.out.println("Shortest Path: " + path);
+        System.out.println("Cost of Shortest Path: " + cost);
+        System.out.println("Time Taken: " + time + " ms");
     }// end print table
+
+    public static List<String> reconstructPath(Node node){
+        List<String> path = new ArrayList<>();
+
+        while(node!= null){
+            path.add(node.row + "," + node.col);
+            node = node.parent;
+        }
+        Collections.reverse(path);
+        return path;
+    } // END RECONSTRUCT PATH
 
 
 
