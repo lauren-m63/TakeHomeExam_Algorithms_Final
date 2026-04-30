@@ -1,3 +1,6 @@
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 public class HeuristicJustification_TakeHome1 {
 
 
@@ -54,13 +57,36 @@ public class HeuristicJustification_TakeHome1 {
         } // end i loop
 
 
+        PriorityQueue<Node> pq =
+                new PriorityQueue<>(Comparator.comparingInt(Node::f));
+                // priority queue of node objects that sorts them by node.f() so whichever has smallest f gets out first
+
+        boolean[][] visited = new  boolean[gx.length][gx[0].length];
+
+        Node startNode = new Node(start[0], start[1], 0, heutristic(start[0],start[1], end [0], end[1]), null));
+
+        pq.add(startNode);
+
+        int nodesVisited = 0;
+
+
+       int [][] directions = new int[][]{ // for which direction igo in
+               {-1, 0}, // up
+               {1, 0}, // down
+               {0, -1}, // left
+               {0, 1},// right
+        };
+
+        while(!pq.isEmpty()){
+
+        } // end while loop
 
     } // END ASTARALG
 
 
 
 
-    public class Node {
+    public static class Node {
         int row;
         int col;
         int g;
