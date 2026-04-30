@@ -34,6 +34,8 @@ public class TerrainTilesAStar {
                 {'P', 'P' , 'S', 'P', 'P'},
         };
 
+        AStarAlg(input1Matrix);
+
     }// END MAIN
 
     public static void AStarAlg(char[][] gx){
@@ -62,7 +64,7 @@ public class TerrainTilesAStar {
 
         boolean[][] visited = new  boolean[gx.length][gx[0].length];
 
-        Node startNode = new Node(start[0], start[1], 0, heutristic(start[0],start[1], end [0], end[1]), null));
+        Node startNode = new Node(start[0], start[1], 0, heutristic(start[0],start[1], end [0], end[1]), null);
 
         pq.add(startNode);
 
@@ -95,6 +97,9 @@ public class TerrainTilesAStar {
 
                 List<String> path = new ArrayList<>();
 
+                printTable(nodesVisited, path, current.g, totalTime);
+
+                return; // end since found the goal
 
             }// end if statement for goal found
 
@@ -108,7 +113,7 @@ public class TerrainTilesAStar {
                         && nextCol >= 0
                         && nextCol < gx[0].length
                         && !visited[nextRow][nextCol]
-                        && gx[nextRow][nextCol] != 'M'{
+                        && gx[nextRow][nextCol] != 'M'){
 
                     int newG = current.g +terrainCompute(gx[nextRow][nextCol]);
 
