@@ -79,7 +79,26 @@ public class HeuristicJustification_TakeHome1 {
 
         while(!pq.isEmpty()){
 
+            Node current = pq.poll();
+
+            if (visited[current.row][current.col]){
+                continue; // if ive alreayd been there
+            }
+
+            visited[current.row][current.col] = true;
+            nodesVisited++;
+
+            // if i find the goal tile i am gonna print my table about it
+            if (current.row == end[0] && current.col == end[1]){
+                // CALL PRINTING METHOD
+
+            }// end if statement for goal found
+
         } // end while loop
+
+
+
+
 
     } // END ASTARALG
 
@@ -112,6 +131,12 @@ public class HeuristicJustification_TakeHome1 {
         return 2 * (Math.abs(goalRow - row) + Math.abs(goalCol - col));
 
     }// END HEURISTIC
+
+
+
+    public static void printTable(){
+
+    }// end print table
 
 
 
