@@ -1,10 +1,10 @@
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class HeuristicJustification_TakeHome1 {
+public class TerrainTilesAStar {
 
 
-    public HeuristicJustification_TakeHome1(){
+    public TerrainTilesAStar(){
       //
     }
 
