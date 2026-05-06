@@ -1,9 +1,9 @@
 import java.util.*;
 
-public class TerrainTilesAStar {
+public class TerrainTilesAStarFULL {
 
 
-    /*
+ /*
 
     TIME AND SPACE COMPLEXITY
 
@@ -18,28 +18,10 @@ public class TerrainTilesAStar {
      */
 
 
-    public TerrainTilesAStar(){
-      //
+
+    public TerrainTilesAStarFULL(){
+      // constructor
     }
-
-    /*
-
-    heuristic is usually the Euclidean distance which is the squared and sqaure rooted x y
-    or the manhattan distance which is xs and ys difference absolute value added
-     */
-
-
-    /*
-
-    contents
-    the algorithm
-    node class
-    where i do heuristic math
-    somewhere terrain costs
-    method to do my printing or i cna combined top two
-    paht reconstruction
-
-     */
 
     public static void main(String[] args){
 
@@ -88,60 +70,62 @@ public class TerrainTilesAStar {
 
     }// END MAIN
 
+
+
+
+    /* ********************* A Star Algorithm (find goal and traverse neighbors) ********************* */
     public static void AStarAlg(char[][] gx){
 
         long startTime = System.currentTimeMillis();
 
-        int[] start = null;
+        int[] start = null; // arrays bc row, columns
         int[] end = null;
 
-        // looking for the start and end tiles
+        // 1. looking for start(H) and end (G) tiles
         for(int i = 0; i < gx.length; i++){
             for(int j = 0; j < gx[0].length; j++){
                 if(gx[i][j] == 'H'){
-                    start = new int[]{i,j};
+                    start = new int[]{i,j}; // add row/column of start tile
                 }
                 if (gx[i][j] == 'G'){
                     end = new int[]{i,j};
                 }
-            } // end j loop
-        } // end i loop
+            }
+        }
 
-
+        //2. setting up structures (visited, directions, priorityQueue)
         PriorityQueue<Node> pq =
                 new PriorityQueue<>(Comparator.comparingInt(Node::f));
                 // priority queue of node objects that sorts them by node.f() so whichever has smallest f gets out first
 
-        boolean[][] visited = new  boolean[gx.length][gx[0].length];
-
+        boolean[][] visited = new  boolean[gx.length][gx[0].length]; // prevents infinite loop so you don't revisit nodes
         Node startNode = new Node(start[0], start[1], 0, heutristic(start[0],start[1], end [0], end[1]), null);
-
-        pq.add(startNode);
+        pq.add(startNode); // add the first node to the queue to poll it later
 
         int nodesVisited = 0;
 
-
-       int [][] directions = new int[][]{ // for which direction igo in
+       int [][] directions = new int[][]{ // for which direction i go in
                {-1, 0}, // up
                {1, 0}, // down
                {0, -1}, // left
                {0, 1},// right
         };
 
+       //3. main traversal loop until queue is empty
         while(!pq.isEmpty()){
 
             Node current = pq.poll();
 
-            if (visited[current.row][current.col]){
-                continue; // if ive alreayd been there
+            if (visited[current.row][current.col] == true){
+                continue; // if i pop a node ive been to then i skip logic go to the next one in the queue, continue to pq.poll above
             }
 
-            visited[current.row][current.col] = true;
+            visited[current.row][current.col] = true; // mark as visited
             nodesVisited++;
 
-            // if i find the goal tile i am gonna print my table about it
+            // check is goal is found
             if (current.row == end[0] && current.col == end[1]){
-                // CALL PRINTING METHOD
+                // reconstruct path and print results
                 long endTime = System.currentTimeMillis();
                 long totalTime = endTime - startTime;
 
@@ -153,7 +137,7 @@ public class TerrainTilesAStar {
 
             }// end if statement for goal found
 
-
+            // if it was not the goal, explore the neighbors if they are in bounds, not visited,and not moutnains
             for (int[] direction : directions) {
                 int nextRow = current.row + direction[0];
                 int nextCol = current.col + direction[1];
@@ -165,8 +149,7 @@ public class TerrainTilesAStar {
                         && !visited[nextRow][nextCol]
                         && gx[nextRow][nextCol] != 'M'){
 
-                    int newG = current.g +terrainCompute(gx[nextRow][nextCol]);
-
+                    int newG = current.g +terrainCompute(gx[nextRow][nextCol]); //compute H and G for neighbors (if pass through parameters) and then add to queue
                     int newH = heutristic(nextRow, nextCol, end[0], end[1]);
 
                     Node neighbor = new Node(
@@ -176,26 +159,21 @@ public class TerrainTilesAStar {
                 }// end if statement
 
             }// end for loop
-
-
         } // end while loop
-
         System.out.println(" No path was found ");
-
-
-
-
 
     } // END ASTARALG
 
 
 
 
+
+    /* ********************* Node Class ********************* */
     public static class Node {
         int row;
         int col;
-        int g;
-        int h;
+        int g; // cost so far
+        int h; // heuristic to goal
         Node parent;
 
         Node(int row, int col, int g, int h, Node parent) {
@@ -218,6 +196,11 @@ public class TerrainTilesAStar {
 
     }// END HEURISTIC
 
+
+
+
+
+    /* ********************* Compute Cost of Terrain ********************* */
     public static int terrainCompute(char tile){
         switch (tile){
             case 'H':
@@ -235,6 +218,28 @@ public class TerrainTilesAStar {
 
 
 
+
+
+
+                    /* ********************* Path Reconstruction ********************* */
+    public static List<String> reconstructPath(Node node, char[][] grid){
+        List<String> path = new ArrayList<>();
+
+        while(node!= null){
+            //path.add(node.row + "," + node.col); adds them as numbers nr change to it as letters
+            path.add(String.valueOf(grid[node.row][node.col])); // each node stores parent, go backwards through to get path
+            node = node.parent;
+        }
+        Collections.reverse(path);
+        return path;
+    } // END RECONSTRUCT PATH
+
+
+
+
+
+
+    /* ********************* Print Table ********************* */
     public static void printTable(int nodesVisited, List<String> path, int cost, long time){
         System.out.println("===== PERFORMANCE TABLE =====");
         System.out.println("Nodes Visited: " + nodesVisited);
@@ -244,38 +249,7 @@ public class TerrainTilesAStar {
         System.out.println("Time Taken: " + time + " ms");
     }// end print table
 
-    public static List<String> reconstructPath(Node node, char[][] grid){
-        List<String> path = new ArrayList<>();
-
-        while(node!= null){
-            //path.add(node.row + "," + node.col); adds them as numbers nr change to it as letters
-            path.add(String.valueOf(grid[node.row][node.col]));
-            node = node.parent;
-        }
-        Collections.reverse(path);
-        return path;
-    } // END RECONSTRUCT PATH
 
 
 
 } // LAST BRACKET END CLASS
-
-
-
-
-
-
-//public char[] convertMatrixToChar(char[][] charMatrix) {
-//    int[][] intMatrix = new int[charMatrix.length][charMatrix[0].length];
-//    for (int i = 0; i < charMatrix.length; i++) {
-//        for (int j = 0; j < charMatrix[i].length; j++) {
-//            if(charMatrix[i][j] == 'H'){intMatrix[i][j] = 2; };
-//            if(charMatrix[i][j] == 'G'){intMatrix[i][j] = 2; };
-//            if(charMatrix[i][j] == 'P'){intMatrix[i][j] = 2; };
-//            if(charMatrix[i][j] == 'S'){intMatrix[i][j] = 2; };
-//            if(charMatrix[i][j] == 'M'){intMatrix[i][j] = ; };
-//
-//        }
-//    }
-//
-//} //END CONVERTMATRIXTOCHAR
